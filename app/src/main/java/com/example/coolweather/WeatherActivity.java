@@ -1,8 +1,12 @@
 package com.example.coolweather;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.Image;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,6 +37,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private static final String TAG = "WeatherActivity";
 
+    public DrawerLayout drawerLayout ;
+
     private ScrollView weatherLayout;
 
     private TextView titleCity;
@@ -57,7 +63,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     private ImageView bingPicImg;
 
-    private SwipeRefreshLayout swipRefresh;
+    public SwipeRefreshLayout swipeRefresh;
 
     private SharedPreferences prefs;
 
@@ -65,6 +71,13 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //全屏
+        if(Build.VERSION.SDK_INT>=21){
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_weather);
         //初始化控件
         initControls();
@@ -100,7 +113,7 @@ public class WeatherActivity extends AppCompatActivity {
                     public void run() {
                         Toast.makeText(WeatherActivity.this,
                                 "获取天气信息失败", Toast.LENGTH_SHORT).show();
-                        swipRefresh.setRefreshing(false);
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -123,7 +136,7 @@ public class WeatherActivity extends AppCompatActivity {
                             Toast.makeText(WeatherActivity.this,
                                     "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }
-                        swipRefresh.setRefreshing(false);
+                        swipeRefresh.setRefreshing(false);
                     }
                 });
             }
@@ -190,9 +203,9 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText = (TextView) findViewById(R.id.car_wash_text);
         sportText = (TextView) findViewById(R.id.sport_text);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        swipRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-        swipRefresh.setColorSchemeResources(R.color.colorPrimary);
-        swipRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 String weatherString = prefs.getString("weather",null);
@@ -200,6 +213,7 @@ public class WeatherActivity extends AppCompatActivity {
                 requestWeather(weather.basic.weatherId);
             }
         });
+
         bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
         String bingPic = prefs.getString("bing_pic",null);
         if(bingPic!=null){
@@ -208,11 +222,12 @@ public class WeatherActivity extends AppCompatActivity {
         }else{
             loadBingPic();
         }
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         selectCity = (ImageView) findViewById(R.id.select_city);
         selectCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(WeatherActivity.this, "You want to select city!", Toast.LENGTH_SHORT).show();
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
     }
