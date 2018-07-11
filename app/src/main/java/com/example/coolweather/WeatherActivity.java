@@ -1,7 +1,9 @@
 package com.example.coolweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -80,6 +82,9 @@ public class WeatherActivity extends AppCompatActivity {
             weatherLayout.setVisibility(View.INVISIBLE);
             Log.d(TAG, "onCreate: weatherID:"+weatherId);
             requestWeather(weatherId);
+        }
+        if(Build.VERSION.SDK_INT>=21){
+
         }
     }
 
@@ -212,7 +217,9 @@ public class WeatherActivity extends AppCompatActivity {
         selectCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(WeatherActivity.this, "You want to select city!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(WeatherActivity.this, "You want to select city!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(WeatherActivity.this,ManageCityActivity.class);
+                startActivity(intent);
             }
         });
     }
