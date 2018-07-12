@@ -2,19 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#8000">
     <TextView
         android:id="@+id/city_name_manage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_marginLeft="10dp"
         android:layout_gravity="center_vertical"
         android:gravity="start"
         android:textColor="#fff"
-        android:textSize="20sp"/>
+        android:textSize="40sp"/>
     <TextView
-        android:id="@+id/weather_manage"
+        android:id="@+id/weather_info_manage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:gravity="right"
+        android:textColor="#fff"
+        android:textSize="40sp"/>
+    <TextView
+        android:id="@+id/temperature_manage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -22,5 +32,5 @@
         android:layout_gravity="center_vertical"
         android:gravity="end"
         android:textColor="#fff"
-        android:textSize="20sp"/>
+        android:textSize="40sp"/>
 </LinearLayout>

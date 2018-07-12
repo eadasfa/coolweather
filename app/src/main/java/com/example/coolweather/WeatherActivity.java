@@ -2,6 +2,7 @@ package com.example.coolweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -64,6 +65,10 @@ public class WeatherActivity extends AppCompatActivity {
     private SharedPreferences prefs;
 
     private ImageView selectCity;
+
+    private String weatherId;
+    //true为访问了onActivityResult()函数，如果访问了那就不再执行onStart，避免weatherId不一致
+    private boolean flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,20 +76,41 @@ public class WeatherActivity extends AppCompatActivity {
         //初始化控件
         initControls();
 
-        String weatherString = prefs.getString("weather",null);
-        if(weatherString!=null){
-            //有缓存时直接解析天气数据
-            Weather weather = Utility.handleWeatherResponse(weatherString);
-            showWeatherInfo(weather);
-        }else{
-            //无缓存时到服务器查询
-            String weatherId = getIntent().getStringExtra("weather_id");
-            weatherLayout.setVisibility(View.INVISIBLE);
-            Log.d(TAG, "onCreate: weatherID:"+weatherId);
-            requestWeather(weatherId);
-        }
         if(Build.VERSION.SDK_INT>=21){
+            View view = getWindow().getDecorView();
+            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            |View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
+    }
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart: ");
+        super.onStart();
+        if (!flag) {
+            weatherId = getIntent().getStringExtra("weather_id");
+
+            String weatherString = prefs.getString("weather", null);
+            if (weatherString != null) {
+                //有缓存时直接解析天气数据
+                Weather weather = Utility.handleWeatherResponse(weatherString);
+                if (weatherId == null || weatherId.equals(weather.basic.weatherId)) {
+                    weatherId = weather.basic.weatherId;
+                    Log.d(TAG + "start", "weatherId:" + weatherId);
+                    showWeatherInfo(weather);
+                } else {
+                    weatherLayout.setVisibility(View.INVISIBLE);
+                    requestWeather(weatherId);
+
+                }
+            } else {
+                //无缓存时到服务器查询
+                weatherLayout.setVisibility(View.INVISIBLE);
+                requestWeather(weatherId);
+            }
+        }else{
+            flag = !flag;
         }
     }
 
@@ -113,7 +139,7 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText = response.body().string();
-                Log.d(TAG, "onResponse: responseText:"+responseText);
+//                Log.d(TAG, "onResponse: responseText:"+responseText);
                 final Weather weather = Utility.handleWeatherResponse(responseText);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -200,6 +226,7 @@ public class WeatherActivity extends AppCompatActivity {
         swipRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d(TAG+"sta", "onRefresh: "+weatherId);
                 String weatherString = prefs.getString("weather",null);
                 Weather weather = Utility.handleWeatherResponse(weatherString);
                 requestWeather(weather.basic.weatherId);
@@ -219,7 +246,9 @@ public class WeatherActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Toast.makeText(WeatherActivity.this, "You want to select city!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(WeatherActivity.this,ManageCityActivity.class);
-                startActivity(intent);
+                intent.putExtra("currentWeatherId",weatherId);
+                intent.putExtra(weatherId,prefs.getString("weather",null));
+                startActivityForResult(intent,1);
             }
         });
     }
@@ -252,4 +281,25 @@ public class WeatherActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult: ");
+        if(resultCode==RESULT_OK){
+
+            switch (requestCode){
+                case 1:
+                    String id = data.getStringExtra("weather_id_for_result");
+                    if(id!=null){
+                        weatherId = id;
+                        Log.d(TAG+"sta", "onActivityResult: "+id);
+                        weatherLayout.setVisibility(View.INVISIBLE);
+                        swipRefresh.setRefreshing(true);
+                        requestWeather(weatherId);
+                        flag = !flag;
+                    }
+                    break;
+                default:
+            }
+        }
+    }
 }

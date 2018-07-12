@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8000">
+    android:background="#fff">
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hhhhhhhhhh"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/manage_city_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/manage_city_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="bottom|center_horizontal"
+            app:backgroundTint="#fff"
+            android:src="@drawable/add" />
+    </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

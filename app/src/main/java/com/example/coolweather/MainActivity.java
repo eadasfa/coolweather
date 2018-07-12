@@ -17,13 +17,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d(TAG, "weather_id="+prefs.getString("weather_id",null));
-        if(prefs.getString("weather_id",null)!=null){
-            Intent intent = new Intent(this, WeatherActivity.class);
-            startActivity(intent);
-            finish();
+        String judge = getIntent().getStringExtra(ManageCityFragment.SELECT_ANOTHER_CITY);
+        if(judge==null||!judge.equals(ManageCityFragment.SELECT_ANOTHER_CITY)) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            Log.d(TAG, "weather_id=" + prefs.getString("weather_id", null));
+            if (prefs.getString("weather_id", null) != null) {
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 }
