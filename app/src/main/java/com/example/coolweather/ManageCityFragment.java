@@ -58,6 +58,7 @@ public class ManageCityFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),MainActivity.class);
                 intent.putExtra(SELECT_ANOTHER_CITY,SELECT_ANOTHER_CITY);
                 startActivity(intent);
+                getActivity().finish();
             }
         });
     }
