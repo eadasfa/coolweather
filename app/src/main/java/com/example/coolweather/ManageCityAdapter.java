@@ -95,6 +95,7 @@ public class ManageCityAdapter extends RecyclerView.Adapter<ManageCityAdapter.Vi
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Warning");
         builder.setMessage("是否删除城市:"+weatherList.get(viewHolder.getAdapterPosition()).basic.cityName+"?");
+        builder.setCancelable(true);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -111,6 +112,7 @@ public class ManageCityAdapter extends RecyclerView.Adapter<ManageCityAdapter.Vi
                     editor.putString("all_weathers",allWeathers);
                     editor.apply();
                 }
+                //当前没有任何城市时 跳转到初始界面
                 if(weatherList.size()==0){
                     Intent intent = new Intent(activity,MainActivity.class);
                     intent.putExtra(ManageCityFragment.SELECT_ANOTHER_CITY,ManageCityFragment.SELECT_ANOTHER_CITY);
@@ -121,7 +123,13 @@ public class ManageCityAdapter extends RecyclerView.Adapter<ManageCityAdapter.Vi
                 notifyItemRemoved(viewHolder.getAdapterPosition());
             }
         });
-        builder.setCancelable(false);
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
         builder.show();
     }
     private void click(ViewHolder viewHolder){
