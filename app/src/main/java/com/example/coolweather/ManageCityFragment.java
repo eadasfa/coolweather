@@ -87,13 +87,15 @@ public class ManageCityFragment extends Fragment {
         editor.putString(currentWeatherId,currentWeatherInfo);
         editor.putString("all_weathers",allWeathers);
         editor.apply();
-        String weathers[] = allWeathers.split(" ");
+        String weathers[] = allWeathers.split("\\s+");
         Log.d(TAG, "initList: weathers[]:"+ Arrays.toString(weathers));
         for (String ws: weathers){
             String weatherInfo = prefs.getString(ws,null);
             Weather weather = Utility.handleWeatherResponse(weatherInfo);
-            Log.d(TAG, "currentId:"+ws+" city"+weather.basic.cityName);
-            weatherList.add(weather);
+            if(weather!=null){
+                Log.d(TAG, "currentId:"+ws+" city"+weather.basic.cityName);
+                weatherList.add(weather);
+            }
         }
     }
 }
